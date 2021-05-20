@@ -1,22 +1,19 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:wazeefa/fetch_rest_api.dart';
 import 'package:wazeefa/job.dart';
-import 'package:http/http.dart' as http;
 import 'package:wazeefa/job_posting_item.dart';
-
-Future<List<Job>> fetchJobs() async {
-  final respone = await http
-      .get(Uri.parse('https://jobs.github.com/positions.json?description='));
-  final parsed = jsonDecode(respone.body).cast<Map<String, dynamic>>();
-  return parsed.map<Job>((json) => Job.fromJson(json)).toList();
-}
+import 'package:wazeefa/search_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Wazeefa());
 }
 
-class MyApp extends StatelessWidget {
+class Wazeefa extends StatefulWidget {
+  @override
+  _WazeefaState createState() => _WazeefaState();
+}
+
+class _WazeefaState extends State<Wazeefa> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,6 +41,12 @@ class _JobsPageState extends State<JobsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchPage())))
+        ],
       ),
       body: FutureBuilder<List<Job>>(
         future: fetchJobs(),

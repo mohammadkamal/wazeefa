@@ -11,9 +11,13 @@ class JobPostingItem extends StatelessWidget {
   Widget _photoWidget() {
     return CachedNetworkImage(
         imageUrl: job.companyLogoURL,
-        placeholder: (context, url) => Row(
-              children: [CircularProgressIndicator()],
-              mainAxisAlignment: MainAxisAlignment.center,
+        placeholder: (context, url) => Container(
+              child: CircularProgressIndicator(),
+              alignment: Alignment.center,
+            ),
+        errorWidget: (context, url, error) => Container(
+              child: Icon(Icons.broken_image),
+              alignment: Alignment.center,
             ),
         height: 100,
         width: 100);
@@ -33,7 +37,7 @@ class JobPostingItem extends StatelessWidget {
 
   Widget _companyNameWidget() {
     return Container(
-      padding: EdgeInsets.only(top: 3, bottom: 3),
+        padding: EdgeInsets.only(top: 3, bottom: 3),
         width: 200,
         child: Text(
           'at ' + job.companyName,
