@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:wazeefa/job.dart';
 import 'package:wazeefa/job_posting_page.dart';
+import 'package:wazeefa/jobs_database.dart';
+import 'package:wazeefa/link_web_view.dart';
 
 class JobPostingItem extends StatelessWidget {
   final Job job;
@@ -105,6 +107,74 @@ class JobPostingItem extends StatelessWidget {
       ),
       onTap: () => Navigator.push(context,
           MaterialPageRoute(builder: (context) => JobPostingPage(job: job))),
+      onLongPress: () => showDialog(
+          context: context,
+          builder: (context) => OnLongPressDialog(
+                job: job,
+              )),
+    );
+  }
+}
+
+class OnLongPressDialog extends StatefulWidget {
+  final Job job;
+
+  const OnLongPressDialog({Key key, this.job}) : super(key: key);
+  @override
+  _OnLongPressDialogState createState() => _OnLongPressDialogState();
+}
+
+class _OnLongPressDialogState extends State<OnLongPressDialog> {
+  bool _isSaved = false;
+
+  Future<void> _checkIfSaved() async {
+    var _result = await JobsDatabase.instance.findJob(widget.job.jobID);
+    if (_result != _isSaved) {
+      setState(() {
+        _isSaved = _result;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfSaved();
+  }
+
+  void _onSaveTap() async {
+    if (!_isSaved) {
+      await JobsDatabase.instance
+          .addJob(widget.job)
+          .whenComplete(() => setState(() {
+                _isSaved = !_isSaved;
+              }));
+    } else {
+      await JobsDatabase.instance
+          .deleteJob(widget.job.jobID)
+          .whenComplete(() => setState(() {
+                _isSaved = !_isSaved;
+              }));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Actions on job'),
+      content: Text('Choose what to do with this posting'),
+      actions: [
+        TextButton(
+            onPressed: _onSaveTap,
+            child: _isSaved ? Text('Unsave') : Text('Save')),
+        TextButton(
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LinkWebView(link: widget.job.jobURL))),
+          child: Text('View online'),
+        ),
+      ],
     );
   }
 }

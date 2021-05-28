@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:wazeefa/job.dart';
+import 'package:wazeefa/jobs_database.dart';
 import 'package:wazeefa/link_web_view.dart';
 
 class JobPostingPage extends StatefulWidget {
@@ -12,6 +13,22 @@ class JobPostingPage extends StatefulWidget {
 }
 
 class _JobPostingPageState extends State<JobPostingPage> {
+  bool _isSaved = false;
+
+  Future<void> _checkIfSaved() async {
+    var _result = await JobsDatabase.instance.findJob(widget.job.jobID);
+    if (_result != _isSaved) {
+      setState(() {
+        _isSaved = _result;
+      });
+    }
+  }
+
+  void initState() {
+    super.initState();
+    _checkIfSaved();
+  }
+
   Widget _titleWidget() {
     return Container(
       padding: EdgeInsets.all(8),
@@ -149,11 +166,33 @@ class _JobPostingPageState extends State<JobPostingPage> {
     );
   }
 
+  Widget _bookmarkButton() {
+    return IconButton(
+      icon: _isSaved ? Icon(Icons.bookmark_remove) : Icon(Icons.bookmark_add),
+      onPressed: () async {
+        if (!_isSaved) {
+          await JobsDatabase.instance
+              .addJob(widget.job)
+              .whenComplete(() => setState(() {
+                    _isSaved = !_isSaved;
+                  }));
+        } else {
+          await JobsDatabase.instance
+              .deleteJob(widget.job.jobID)
+              .whenComplete(() => setState(() {
+                    _isSaved = !_isSaved;
+                  }));
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.job.title),
+        actions: [_bookmarkButton()],
       ),
       body: ListView(
         children: [_topInfoCard(), _descriptionCard()],

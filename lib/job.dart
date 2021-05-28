@@ -25,6 +25,9 @@ class Job {
       this.howToApply});
 
   factory Job.fromJson(Map<String, dynamic> json) => _$JobFromJson(json);
+
+  //For sqlite
+  Map<String, dynamic> toDatabaseMap() => _$JobToDatabaseMap(this);
 }
 
 Job _$JobFromJson(Map<String, dynamic> json) {
@@ -41,3 +44,17 @@ Job _$JobFromJson(Map<String, dynamic> json) {
       companyLogoURL: json['company_logo'],
       howToApply: json['how_to_apply']);
 }
+
+Map<String, dynamic> _$JobToDatabaseMap(Job job) => <String, dynamic>{
+      'jobID': job.jobID,
+      'type': job.type,
+      'jobURL': job.jobURL,
+      'createTime': job.createTime,
+      'companyName': job.companyName,
+      'companyURL': job.companyURL,
+      'location': job.location,
+      'title': job.title,
+      'description': job.description,
+      'companyLogoURL': job.companyLogoURL,
+      'howToApply': job.howToApply
+    };
