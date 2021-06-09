@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.wazeefa">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="wazeefa"
+        android:label="Wazeefa"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

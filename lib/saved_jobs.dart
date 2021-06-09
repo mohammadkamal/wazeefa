@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wazeefa/job.dart';
 import 'package:wazeefa/job_posting_item.dart';
@@ -26,6 +27,10 @@ class _SavedJobsState extends State<SavedJobs> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text('Saved jobs'),
       ),
       body: ListView(

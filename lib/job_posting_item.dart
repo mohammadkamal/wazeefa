@@ -11,18 +11,21 @@ class JobPostingItem extends StatelessWidget {
   const JobPostingItem({Key key, @required this.job}) : super(key: key);
 
   Widget _photoWidget() {
-    return CachedNetworkImage(
-        imageUrl: job.companyLogoURL,
-        placeholder: (context, url) => Container(
-              child: CircularProgressIndicator(),
-              alignment: Alignment.center,
-            ),
-        errorWidget: (context, url, error) => Container(
-              child: Icon(Icons.broken_image),
-              alignment: Alignment.center,
-            ),
-        height: 100,
-        width: 100);
+    return Container(
+        padding: EdgeInsets.only(left: 10),
+        child: CachedNetworkImage(
+            imageUrl: job.companyLogoURL,
+            placeholder: (context, url) => Container(
+                  child: CircularProgressIndicator(),
+                  alignment: Alignment.center,
+                ),
+            errorWidget: (context, url, error) => Container(
+                  child: Icon(Icons.broken_image),
+                  alignment: Alignment.center,
+                ),
+            alignment: Alignment.center,
+            height: 80,
+            width: 80));
   }
 
   Widget _titleWidget() {
@@ -65,7 +68,7 @@ class JobPostingItem extends StatelessWidget {
         children: [
           Icon(
             Icons.location_on,
-            color: Colors.blue[300],
+            color: Colors.red[400],
           ),
           Container(
               width: 150,
@@ -97,9 +100,13 @@ class JobPostingItem extends StatelessWidget {
     return GestureDetector(
       child: Container(
         padding: EdgeInsets.only(top: 8, bottom: 8),
+        margin: EdgeInsets.all(5),
         decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5))]),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(color: Colors.grey.withOpacity(0.5), spreadRadius: 1.5)
+            ]),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [_photoWidget(), _infoWidget()],

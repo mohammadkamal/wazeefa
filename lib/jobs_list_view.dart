@@ -31,10 +31,14 @@ class _JobsPageState extends State<JobsPage> {
         future: fetchJobs(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Row(
-              children: [
-                OutlinedButton(onPressed: fetchJobs, child: Text('Reload'))
-              ],
+            return Container(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Text(snapshot.error),
+                  OutlinedButton(onPressed: fetchJobs, child: Text('Reload'))
+                ],
+              ),
             );
           } else if (snapshot.hasData) {
             return RefreshIndicator(

@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:wazeefa/job.dart';
@@ -29,11 +31,46 @@ class _JobPostingPageState extends State<JobPostingPage> {
     _checkIfSaved();
   }
 
+  BoxDecoration _boxDecoration() {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.grey.withOpacity(0.5), spreadRadius: 1.5)
+        ]);
+  }
+
+  Widget _companyLogoWidget() {
+    return Container(
+        margin: EdgeInsets.only(top: 20),
+        width: 150,
+        height: 150,
+        decoration: BoxDecoration(color: Colors.white, boxShadow: [
+          BoxShadow(color: Colors.grey.withOpacity(0.5), spreadRadius: 2)
+        ]),
+        child: FittedBox(
+            fit: BoxFit.fill,
+            child: CachedNetworkImage(
+              imageUrl: widget.job.companyLogoURL,
+              placeholder: (context, url) => Container(
+                child: CircularProgressIndicator(),
+                alignment: Alignment.center,
+              ),
+              errorWidget: (context, url, error) => Container(
+                child: Icon(Icons.broken_image),
+                alignment: Alignment.center,
+              ),
+              alignment: Alignment.center,
+            )));
+  }
+
   Widget _titleWidget() {
     return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.all(8),
       child: Text(
         widget.job.title,
+        textAlign: TextAlign.center,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         softWrap: true,
       ),
@@ -41,13 +78,12 @@ class _JobPostingPageState extends State<JobPostingPage> {
   }
 
   Widget _typeWidget() {
-    return Padding(
-        padding: EdgeInsets.only(left: 8),
-        child: Container(
-          padding: EdgeInsets.all(3),
-          decoration: BoxDecoration(color: Colors.grey[300]),
-          child: Text(widget.job.type),
-        ));
+    return Container(
+      margin: EdgeInsets.only(left: 8),
+      padding: EdgeInsets.all(3),
+      decoration: BoxDecoration(color: Colors.grey[300]),
+      child: Text(widget.job.type),
+    );
   }
 
   Widget _companyNameTopWidget() {
@@ -70,17 +106,11 @@ class _JobPostingPageState extends State<JobPostingPage> {
 
   Widget _locationWidget() {
     return Container(
-      padding: EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Icon(Icons.location_on, color: Colors.blue[300]),
-          Text(
-            widget.job.location,
-            style: TextStyle(color: Colors.grey),
-          )
-        ],
-      ),
-    );
+        padding: EdgeInsets.all(8),
+        child: Text(
+          widget.job.location,
+          style: TextStyle(color: Colors.grey),
+        ));
   }
 
   Widget _timeWidget() {
@@ -92,18 +122,19 @@ class _JobPostingPageState extends State<JobPostingPage> {
 
   Widget _howToApplyWidget() {
     return Container(
-      margin: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-          color: Colors.yellow[300],
-          border: Border.all(color: Colors.brown),
-          borderRadius: BorderRadius.circular(5)),
+      margin: EdgeInsets.only(top: 20),
+      padding: EdgeInsets.all(8),
+      decoration: _boxDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             child: Text(
-              'How to apply:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              'How to apply',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  color: Colors.blue[300]),
             ),
             padding: EdgeInsets.all(8),
           ),
@@ -113,62 +144,79 @@ class _JobPostingPageState extends State<JobPostingPage> {
     );
   }
 
+  Widget _typeLocationWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _typeWidget(),
+        _locationWidget(),
+      ],
+    );
+  }
+
   Widget _topInfoCard() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _titleWidget(),
-        _typeWidget(),
+        _typeLocationWidget(),
         _companyNameTopWidget(),
-        _locationWidget(),
         _timeWidget(),
-        _howToApplyWidget()
       ],
     );
   }
 
   Widget _descriptionCard() {
     return Container(
+        decoration: _boxDecoration(),
+        padding: EdgeInsets.all(8),
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          child: Text(
-            'Description:',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          child: Html(
-            data: widget.job.description,
-          ),
-        )
-      ],
-    ));
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Description',
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[300]),
+              ),
+            ),
+            Container(
+              child: Html(
+                data: widget.job.description,
+              ),
+            )
+          ],
+        ));
   }
 
-  Widget _bottomSheet() {
-    return ListView(
-      children: [
-        ElevatedButton(
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        LinkWebView(link: widget.job.jobURL))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('View Posting at website'), Icon(Icons.web)],
-            ))
-      ],
-      shrinkWrap: true,
+  Widget _bottomLink() {
+    return Container(
+      alignment: Alignment.bottomCenter,
+      child: ElevatedButton(
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LinkWebView(link: widget.job.jobURL))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('View Posting at website'),
+              Icon(CupertinoIcons.globe)
+            ],
+          )),
     );
   }
 
   Widget _bookmarkButton() {
     return IconButton(
-      icon: _isSaved ? Icon(Icons.bookmark_remove) : Icon(Icons.bookmark_add),
+      icon: _isSaved
+          ? Icon(Icons.bookmark_remove)
+          : Icon(
+              Icons.bookmark_add_outlined,
+            ),
       onPressed: () async {
         if (!_isSaved) {
           await JobsDatabase.instance
@@ -190,14 +238,30 @@ class _JobPostingPageState extends State<JobPostingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.job.title),
-        actions: [_bookmarkButton()],
-      ),
-      body: ListView(
-        children: [_topInfoCard(), _descriptionCard()],
-      ),
-      bottomSheet: _bottomSheet(),
-    );
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(CupertinoIcons.back),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text('Job details'),
+          actions: [_bookmarkButton()],
+        ),
+        body: Container(
+            color: Colors.grey[100],
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 50),
+                    child: Column(
+                      children: [
+                        _companyLogoWidget(),
+                        _topInfoCard(),
+                        _descriptionCard(),
+                        _howToApplyWidget()
+                      ],
+                    )),
+                _bottomLink()
+              ],
+            )));
   }
 }

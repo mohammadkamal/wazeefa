@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -23,6 +24,10 @@ class _LinkWebViewState extends State<LinkWebView> {
     print(widget.link);
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(widget.link),
       ),
       body: WebView(initialUrl: widget.link),

@@ -18,15 +18,40 @@ class _WazeefaState extends State<Wazeefa> {
     JobsDatabase.instance.onDatabaseIntialize();
   }
 
+  AppBarTheme _appBarTheme() {
+    return AppBarTheme(
+        elevation: 0,
+        backwardsCompatibility: false,
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.black),
+        actionsIconTheme: IconThemeData(color: Colors.black));
+  }
+
+  ElevatedButtonThemeData _elevatedButtonThemeData() {
+    return ElevatedButtonThemeData(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.red[400])));
+  }
+
+  ThemeData _defaultThemeData() {
+    return ThemeData(
+        primarySwatch: Colors.blue,
+        appBarTheme: _appBarTheme(),
+        elevatedButtonTheme: _elevatedButtonThemeData());
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Wazeefa',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: _defaultThemeData(),
       home: JobsPage(),
     );
   }
 }
-
