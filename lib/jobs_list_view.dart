@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wazeefa/adzuna_job_posting_item.dart';
+import 'package:wazeefa/adzuna_jobs/adzuna_job.dart';
 import 'package:wazeefa/fetch_rest_api.dart';
-import 'package:wazeefa/job.dart';
-import 'package:wazeefa/job_posting_item.dart';
 import 'package:wazeefa/saved_jobs.dart';
 import 'package:wazeefa/search_page.dart';
 
@@ -16,7 +16,7 @@ class _JobsPageState extends State<JobsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Wazeefa'),
-        actions: [
+        actions: [/*
           IconButton(
               icon: Icon(Icons.search),
               onPressed: () => Navigator.push(context,
@@ -24,11 +24,11 @@ class _JobsPageState extends State<JobsPage> {
           IconButton(
               onPressed: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SavedJobs())),
-              icon: Icon(Icons.bookmarks))
+              icon: Icon(Icons.bookmarks))*/
         ],
       ),
-      body: FutureBuilder<List<Job>>(
-        future: fetchJobs(),
+      body: FutureBuilder<List<AdzunaJob>>(
+        future: fetchAdzunaJobs(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Container(
@@ -46,8 +46,8 @@ class _JobsPageState extends State<JobsPage> {
                     shrinkWrap: true,
                     children: snapshot.data.isNotEmpty
                         ? snapshot.data
-                            .map((e) => JobPostingItem(
-                                  job: e,
+                            .map((e) => AdzunaJobPostingItem(
+                                  adzunaJob: e,
                                 ))
                             .toList()
                         : []),
